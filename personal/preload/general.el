@@ -1,3 +1,10 @@
+;;; Load path.
+(defvar home-built "~/Build"
+  "Location of custom built packages.")
+
+;; Undo-tree
+(add-to-list 'load-path (expand-file-name "emacs-undo-tree" home-built))
+
 ;;; Default browser.
 (setq-default browse-url-browser-function 'browse-url-xdg-open)
 
@@ -40,7 +47,19 @@
       (message "%s" file)
       (delete-file file))))
 
-;;; Set
+;;; Undo tree mode.
+(setq undo-limit 78643200)
+(setq undo-outer-limit 104857600)
+(setq undo-strong-limit 157286400)
+(setq undo-tree-mode-lighter " Undo-Tree")
+(setq undo-tree-auto-save-history nil)
+(setq undo-tree-enable-undo-in-region nil)
+(setq undo-tree-visualizer-lazy-drawing 100)
+
+(when (timerp undo-auto-current-boundary-timer)
+  (cancel-timer undo-auto-current-boundary-timer))
+
+(setq whitespace-style '(face tabs trailing))
 
 
 (provide 'general)
