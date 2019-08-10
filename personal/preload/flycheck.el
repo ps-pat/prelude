@@ -9,10 +9,16 @@
 ;; Deactivate some checkers.
 (add-hook 'flycheck-mode-hook
           (lambda ()
-            (add-to-list 'flycheck-disabled-checkers 'python-flake8)))
+            (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+            (add-to-list 'flycheck-disabled-checkers 'julia-linter)))
 
 ;;; C.
 (add-hook 'flycheck-mode-hook
           (lambda ()
             (add-to-list 'flycheck-clang-include-path
                          "/usr/lib/llvm-7/include/openmp")))
+
+;;; Julia.
+;; (flycheck-julia-setup)
+;; (add-to-list 'flycheck-global-modes 'julia-mode)
+;; (add-to-list 'flycheck-global-modes 'ess-julia-mode)
