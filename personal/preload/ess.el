@@ -120,3 +120,6 @@
 (define-key-julia-all "C-c x /" 'julia-integer-division)
 (define-key-julia-all "C-c x x" 'julia-xor)
 (define-key-julia-all "C-c x =" 'julia-approx)
+
+;; Desactivate flycheck mode.
+(add-hook 'ess-julia-mode-hook (lambda () (flycheck-mode -1)))
