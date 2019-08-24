@@ -1,3 +1,5 @@
+(require 'helper)
+
 (defmacro new-operator (fun-name operator-str)
   "Interactively insert an operator."
   `(defun ,fun-name ()
@@ -51,30 +53,11 @@
 ;; My dumb smart underscore.
 (new-operator left-arrow "<-")
 
-(defun get-line-up-to-point ()
-  "Get the current line up to the current position."
-  (buffer-substring-no-properties
-   (line-beginning-position)
-   (+ (line-beginning-position) (current-column))))
-
-(defun get-last-characters (n)
-  "Get the last n non whitespace characters."
-  (let* ((line-up-to-point (get-line-up-to-point))
-         (line-without-space (remove ? line-up-to-point))
-         (nchar (min n (length line-without-space))))
-    (subseq line-without-space (- nchar))))
-
-(defun delete-last-characters (n)
-  "Delete the last n non whitespace characters."
-  (let* ((line (get-line-up-to-point))
-         (nb-whitespaces (- (length line)
-                            (length (string-trim-right line)))))
-    (delete-char (- (+ nb-whitespaces n)))))
-
 (defun ess-dumb-underscore ()
   "Basic replacement for ess smart underscore."
   (interactive)
-  (cond ((bolp) (insert "_"))
+  (cond ((in-quotes-p) (insert "_"))
+        ((bolp) (insert "_"))
         ((string= (get-last-characters 2) "<-")
          (progn
            (delete-last-characters 2)
