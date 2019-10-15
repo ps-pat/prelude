@@ -55,9 +55,15 @@
 (setq undo-tree-auto-save-history nil)
 (setq undo-tree-enable-undo-in-region nil)
 (setq undo-tree-visualizer-lazy-drawing 100)
+(setq-default undo-tree-visualizer-diff t)
+(setq-default undo-tree-visualizer-timestamps t)
 
 (when (timerp undo-auto-current-boundary-timer)
   (cancel-timer undo-auto-current-boundary-timer))
+
+(add-hook 'undo-tree-visualizer-mode-hook
+          (lambda ()
+            (undo-tree-visualizer-selection-mode)))
 
 (setq whitespace-style '(face tabs trailing))
 
