@@ -30,3 +30,6 @@ anaconda-mode/*
 emms/*
 abbrev_defs
 transient/
+var/
+.cache/
+.lsp-session*
