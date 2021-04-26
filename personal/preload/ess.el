@@ -1,16 +1,25 @@
 (require 'helper)
 
+(defcustom ess-operator-no-space-characters
+  (list ? ?.)
+  "Characters after which a space is not needed when inserting an operator."
+  :type 'list
+  :options '(?  ?.)
+  :group 'ess)
+
 (defmacro new-operator (fun-name operator-str)
   "Interactively insert an operator."
   `(defun ,fun-name ()
      (interactive)
 
-     (unless (or (string-equal (string (preceding-char)) " ")
-                 (bolp))
-       (insert " "))
+     (unless (member (preceding-char) ess-operator-no-space-characters)
+       (insert ? ))
+
      (insert ,operator-str)
-     (unless (string-equal (string (following-char)) " ")
-       (insert " "))))
+
+     (if (char-equal (following-char) ? )
+         (forward-char 1)
+         (insert ? ))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; R stuff.
@@ -37,13 +46,13 @@
 ;; (define-key-r-all "_" 'ess-smarter-underscore)
 
 ;; Magrittr pipe operator.
-(define-key-r-all "C->" 'magrittr-pipe)
+(define-key-r-all "C-c x >" 'magrittr-pipe)
 
 ;; Magrittr backpipe operator.
-(define-key-r-all "C-<" 'magrittr-backpipe)
+(define-key-r-all "C-c x <" 'magrittr-backpipe)
 
 ;; Magrittr with operator.
-(define-key-r-all "C-$" 'magrittr-with)
+(define-key-r-all "C-c x $" 'magrittr-with)
 
 ;; TODO: Not working... (binding shadowed by prelude-mode).
 (add-hook
@@ -76,17 +85,23 @@
 ;;; Julia stuff.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'auto-mode-alist '("\\.jl\\'" . ess-julia-mode))
+(use-package julia-snail
+  :ensure t
+  :after vterm
+  :hook (julia-mode . julia-snail-mode))
+
+(add-to-list 'auto-mode-alist '("\\.jl\\'" . julia-mode))
 
 (defmacro define-key-julia-all (key fun)
   "Define a new key mapping for both ess-r-mode and inferior-ess-r-mode."
   `(progn
      (add-hook
-      'ess-julia-mode-hook
-      (lambda () (define-key ess-julia-mode-map (kbd ,key) ,fun)))
+      'julia-snail-mode-hook
+      (lambda () (define-key julia-snail-mode-map (kbd ,key) ,fun)))
+     ;; Not working currently.
      (add-hook
-      'inferior-ess-julia-mode-hook
-      (lambda () (define-key inferior-ess-julia-mode-map (kbd ,key) ,fun)))))
+      'julia-snail-repl-mode-hook
+      (lambda () (define-key julia-snail-repl-mode-map (kbd ,key) ,fun)))))
 
 (new-operator julia-pipe "|>")
 (new-operator julia-compose "∘")

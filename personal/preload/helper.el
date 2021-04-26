@@ -23,7 +23,7 @@
   (let* ((line-up-to-point (get-line-up-to-point))
          (line-without-space (remove ? line-up-to-point))
          (nchar (min n (length line-without-space))))
-    (subseq line-without-space (- nchar))))
+    (cl-subseq line-without-space (- nchar))))
 
 (defun delete-last-characters (n)
   "Delete the last n non whitespace characters."
@@ -34,7 +34,7 @@
 
 (defun in-quotes-p ()
   "Determines if cursor is inside quotes."
-  (oddp (reduce #'+ (mapcar (lambda (char) (if (= char 34) 1 0))
+  (cl-oddp (cl-reduce #'+ (mapcar (lambda (char) (if (= char 34) 1 0))
                             (get-line-up-to-point)))))
 
 (provide 'helper)

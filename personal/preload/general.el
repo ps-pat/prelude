@@ -12,6 +12,7 @@
 ;;; at the same position.
 (defun revert-buffer-no-confirm ()
   "Reverts the current buffer without asking for confirmation."
+  (interactive)
   (let ((old-line (line-number-at-pos))
         (old-column (current-column)))
     (revert-buffer t t)
@@ -22,8 +23,11 @@
                                   (revert-buffer-no-confirm)))
 
 ;;; Transparency:
-(set-frame-parameter (selected-frame) 'alpha '(97 . 90))
-(add-to-list 'default-frame-alist '(alpha . (97 . 90)))
+(set-frame-parameter (selected-frame) 'alpha '(100 . 100))
+(add-to-list 'default-frame-alist '(alpha . (100 . 100)))
+
+;;; Fonts.
+(add-to-list 'default-frame-alist '(font . "FiraCode-10"))
 
 ;;; Menu bar
 (menu-bar-mode)
@@ -42,7 +46,7 @@
       (current (float-time (current-time))))
   (dolist (file (directory-files *bkp-dir* t))
     (when (and (backup-file-name-p file)
-               (> (- current (float-time (fifth (file-attributes file))))
+               (> (- current (float-time (nth 5 (file-attributes file))))
                   week))
       (message "%s" file)
       (delete-file file))))
@@ -55,17 +59,16 @@
 (setq undo-tree-auto-save-history nil)
 (setq undo-tree-enable-undo-in-region nil)
 (setq undo-tree-visualizer-lazy-drawing 100)
-(setq-default undo-tree-visualizer-diff t)
+(setq-default undo-tree-visualizer-diff nil)
 (setq-default undo-tree-visualizer-timestamps t)
 
 (when (timerp undo-auto-current-boundary-timer)
   (cancel-timer undo-auto-current-boundary-timer))
 
-(add-hook 'undo-tree-visualizer-mode-hook
-          (lambda ()
-            (undo-tree-visualizer-selection-mode)))
-
 (setq whitespace-style '(face tabs trailing))
 
+;;; Various keys.
+(global-set-key (kbd "<C-dead-circumflex>")
+                (lambda () (interactive) (join-line t)))
 
 (provide 'general)
